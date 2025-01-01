@@ -1,3 +1,6 @@
+Explain this code and generate appropriate mermaid diagrams (check the syntax of the mermaid diagrams):
+
+```golang
 package main
 
 import (
@@ -95,20 +98,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	/*
-		fmt.Printf("Processing with:\n")
-		fmt.Printf("  Prompt: %s\n", config.PromptPath)
-		fmt.Printf("  Settings: %s\n", config.SettingsPath)
-		fmt.Printf("  Output: %s\n", config.OutputPath)
-	*/
-
 	// Main logic
 	ctx := context.Background()
 
 	errEnv := godotenv.Load(config.SettingsPath + "/.env")
 	if errEnv != nil {
 		log.Fatalf("😡 Error loading .env file: %v", errEnv)
-		// Fatalf is equivalent to [Printf] followed by a call to os.Exit(1).
 	}
 
 	var ollamaRawUrl string
@@ -120,11 +115,6 @@ func main() {
 	if model = os.Getenv("LLM"); model == "" {
 		model = "qwen2.5:0.5b"
 	}
-	// TODO: check if the model is loaded / exists
-	// TODO: add a waiting message
-	// TODO: generate the report and its content at the same time (streaming)
-	// TODO: add 2 flags: --system (context) and --user
-	// TODO: add a flag(s?) for additional files to be sent to the model: --files file1.txt file2.txt
 
 	url, _ := url.Parse(ollamaRawUrl)
 
@@ -182,3 +172,5 @@ func main() {
 		log.Fatalf("😡 Error writing output file: %v", errOutput)
 	}
 }
+
+```
