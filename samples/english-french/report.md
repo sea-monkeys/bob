@@ -1,15 +1,11 @@
-As a "pizza expert," I can tell you that the "best" pizza can be quite subjective, as it often depends on personal preferences regarding style, toppings, and crust. However, there are a few pizzas that are widely acclaimed and often considered among the best in the world:
+WebAssembly est une technologie qui a connu une croissance significative depuis sa création en 2017 et qui est de plus en plus utilisée dans des projets de logiciels stables. Bien que cette technologie ait été conçue pour faire partie de la plateforme web ouverte, son utilisation n'est pas limitée à l'environnement web. WebAssembly est principalement utilisé pour développer des applications web, mais son utilisation est en train de changer à mesure que WASI se développe.
 
-1. **Pizza Margherita** from L'Antica Pizzeria da Michele in Naples, Italy: Many consider this the original and best pizza. It's a simple Neapolitan-style pizza with tomatoes, mozzarella, basil, and olive oil. The crust is soft and charred, and the toppings are fresh and high-quality.
+Les avantages de WebAssembly, tels que les temps de chargement plus rapides et les opportunités d'explorer de nouveaux cas d'utilisation et technologies, convainquent les développeurs d'utiliser cette technologie. WebAssembly est également apprécié pour sa capacité à partager du code entre les projets, à utiliser des binaires qui s'exécutent partout et à être agnostique quant au langage utilisé.
 
-2. **Pizza al Taglio** from Roscioli in Rome, Italy: This Roman-style pizza is sold by the slice and is known for its crispy, thin crust and delicious toppings like prosciutto, mushrooms, and artichokes.
+WebAssembly est utilisé par 76% des développeurs pour développer de nouvelles applications, tandis que 64% utilisent sa portabilité pour porter leurs applications existantes sur de nouveaux plateformes. En outre, 62% migrent leurs applications existantes vers de nouveaux langages de programmation sur la même plateforme.
 
-3. **Pizza Napoletana** from Kesté Pizza & Vino in Naples, Italy: Kesté is famous for its authentic Neapolitan pizza, which has a soft, chewy crust and a thin, smoky char. Their Margherita and Marinara pizzas are particularly renowned.
+Lors de la migration d'applications existantes vers de nouveaux langages dans des projets WebAssembly, 37% des répondants ont rapporté des augmentations de performances comprises entre 21% et 50%, tandis que 30% ont rapporté des augmentations supérieures à 50%. Seuls 6% des répondants ont indiqué que l'utilisation de WebAssembly ne fournit pas suffisamment de bénéfices en termes de performance.
 
-4. **Pizza al Metro** from Pizzeria La Notizia in Naples, Italy: This pizza is sold by the meter and has a unique, airy crust. The toppings are fresh and high-quality, with the Margherita and Margherita Extra being standout options.
+WebAssembly System Interface (WASI) est une interface système modulaire pour WebAssembly qui permet d'utiliser cette technologie en dehors du navigateur. 34% des utilisateurs de WebAssembly utilisent actuellement WASI dans leurs projets, tandis que 34% prévoient l'adopter dans les 12 prochains mois. Les développeurs sont principalement attirés par WASI en raison de sa portabilité et de son déploiement plus facile.
 
-5. **Detroit-Style Pizza** from Buddy's Rendezvous in Detroit, USA: Detroit-style pizza is known for its crispy, caramelized cheese crust and thick, airy interior. Buddy's is often credited with creating this style of pizza.
-
-6. **Sfincione** from Antica Focacceria San Francesco in Palermo, Sicily: This Sicilian street food is a thick, rectangular pizza with a soft, chewy crust and a topping of anchovies, breadcrumbs, and tomatoes.
-
-Each of these pizzas is exceptional in its own way, and the "best" one for you would depend on your personal taste. It's always a good idea to try as many different styles and variations as you can!
+Enfin, les répondants ont rapporté que les fonctionnalités les plus attendues de WASI sont l'HTTP, les entrées/sorties et SQL, suivies de près par le stockage clé-valeur, la configuration du runtime et le système de fichiers.
