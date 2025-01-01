@@ -1,4 +1,4 @@
-Explain this code and generate appropriate mermaid diagrams (check the syntax of the mermaid diagrams):
+Explain this code and generate sequence and state mermaid diagrams (check the syntax of the mermaid diagrams):
 
 ```golang
 package main
