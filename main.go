@@ -127,6 +127,9 @@ func main() {
 	}
 	// TODO: check if the model is loaded / exists
 	// TODO: add a waiting message
+	// TODO: add an option for the conversational memory
+	// TODO: add MCP support
+	// TODO: add RAG features
 	// TODO: generate the report and its content at the same time (streaming)
 	// TODO: add a flag(s?) for additional files to be sent to the model: --files file1.txt file2.txt
 
