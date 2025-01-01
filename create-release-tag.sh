@@ -9,3 +9,4 @@ git commit -m "📦 create release ${TAG}"
 git tag ${TAG}
 git push origin main ${TAG}
 echo "📦️ Release ${TAG} created."
+echo "🚢 You can now create a release on GitHub."

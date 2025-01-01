@@ -1,4 +1,4 @@
-module bob
+module github.com/sea-monkeys/bob
 
 go 1.23.4
 
