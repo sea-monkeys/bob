@@ -1,12 +1,12 @@
-# Explain this code
+# experiments/english-french
 
-This sample is using [qwen2.5-coder:14b](https://ollama.com/library/qwen2.5-coder:14b) to explain source code. 
+
+This sample is using [mistral-nemo:12b](https://ollama.com/library/mistral-nemo:12b) to generate answers in 🇫🇷 French.
 Don't forget to pull the latest version of the model before running the script:
 
 ```bash
-ollama pull qwen2.5-coder:14b
+ollama pull mistral-nemo:12b
 ```
-
 
 The settings for **Bob** are stored in `.bob` directory.
 

@@ -22,6 +22,8 @@ type Config struct {
 	SettingsPath string
 	OutputPath   string
 	//Version string
+	System string
+	User   string
 }
 
 func validatePaths(config Config) error {
@@ -69,6 +71,9 @@ func main() {
 	flag.StringVar(&config.PromptPath, "prompt", "prompt.md", "Path to prompt file")
 	flag.StringVar(&config.SettingsPath, "settings", ".bob", "Path to settings directory")
 	flag.StringVar(&config.OutputPath, "output", "report.md", "Path to output file")
+
+	flag.StringVar(&config.System, "system", "", "System instructions")
+	flag.StringVar(&config.User, "user", "", "User question")
 
 	// Version flag
 	version := flag.Bool("version", false, "Display version information")
@@ -123,12 +128,11 @@ func main() {
 	// TODO: check if the model is loaded / exists
 	// TODO: add a waiting message
 	// TODO: generate the report and its content at the same time (streaming)
-	// TODO: add 2 flags: --system (context) and --user
 	// TODO: add a flag(s?) for additional files to be sent to the model: --files file1.txt file2.txt
 
 	url, _ := url.Parse(ollamaRawUrl)
 
-	fmt.Println("🤖", ollamaRawUrl, model)
+	fmt.Println("🤖 using:", ollamaRawUrl, model)
 
 	// Model settings
 	// Configuration
@@ -141,22 +145,37 @@ func main() {
 
 	client := api.NewClient(url, http.DefaultClient)
 
-	// Load the content of the prompt.txt file
-	prompt, errPrompt := os.ReadFile(config.PromptPath)
-	if errPrompt != nil {
-		log.Fatalf("😡 Error reading prompt file: %v", errPrompt)
+	var systemInstructions, userQuestion string
+
+	if config.System != "" {
+		systemInstructions = config.System
+	} else {
+		// Load the content of the instructions.md file
+		instructions, errInstruct := os.ReadFile(config.SettingsPath + "/instructions.md")
+		if errInstruct != nil {
+			log.Fatalf("😡 Error reading instructions file: %v", errInstruct)
+		}
+		systemInstructions = string(instructions)
 	}
 
-	instructions, errInstruct := os.ReadFile(config.SettingsPath + "/instructions.md")
-	if errInstruct != nil {
-		log.Fatalf("😡 Error reading instructions file: %v", errInstruct)
+	if config.User != "" {
+		userQuestion = config.User
+	} else {
+		// Load the content of the prompt.txt file
+		prompt, errPrompt := os.ReadFile(config.PromptPath)
+		if errPrompt != nil {
+			log.Fatalf("😡 Error reading prompt file: %v", errPrompt)
+		}
+		userQuestion = string(prompt)
 	}
 
 	// Prompt construction
 	messages := []api.Message{
-		{Role: "system", Content: string(instructions)},
-		{Role: "user", Content: string(prompt)},
+		{Role: "system", Content: systemInstructions},
+		{Role: "user", Content: userQuestion},
 	}
+
+	// test if code source empty
 
 	req := &api.ChatRequest{
 		Model:    model,

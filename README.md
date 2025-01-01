@@ -49,4 +49,6 @@ bob --prompt prompt.md --settings .bob --output report.md
 --output   # Path to output file (default: report.md)
 ```
 
+> You can override the content of the `prompt.md` and the `instructions.md` files with the `--system` and `--user` flags: `bob --system "you are a pizza expert" --user "what is the best pizza in the world?"`.
+
 The application reads your prompt, sends it to Ollama with the specified configuration, and saves the LLM's response to the output file.

@@ -1,1 +1,1 @@
-bob v0.0.0 🍔 [hamburger]
+bob v0.0.1 🌭 [hot dog]
