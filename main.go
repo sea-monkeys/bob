@@ -121,6 +121,9 @@ func main() {
 		model = "qwen2.5:0.5b"
 	}
 	// TODO: check if the model is loaded / exists
+	// TODO: add a waiting message
+	// TODO: generate the report and its content at the same time (streaming)
+	// TODO: add 2 flags: --system and --user
 
 	url, _ := url.Parse(ollamaRawUrl)
 
