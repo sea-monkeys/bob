@@ -196,6 +196,7 @@ func main() {
 	if *toolsInvocation {
 		// Tool invocation
 		//fmt.Println("🙂 Tool invocation not implemented yet")
+		fmt.Println("🤖 using:", toolsModel, "for tools")
 
 		// Read tools
 		toolsConfigFile, errToolsConf := os.ReadFile(config.SettingsPath + "/tools.json")
