@@ -19,19 +19,6 @@ import (
 	"github.com/ollama/ollama/api"
 )
 
-// --- MCP ---
-type MCPConfig struct {
-	MCPServers map[string]ServerConfig `json:"mcpServers"`
-}
-
-type ServerConfig struct {
-	Command string            `json:"command"`
-	Args    []string          `json:"args"`
-	Env     map[string]string `json:"env,omitempty"`
-}
-
-// --- MCP ---
-
 type Config struct {
 	PromptPath          string
 	ToolsInvocationPath string
