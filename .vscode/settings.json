@@ -14,7 +14,7 @@
         "diffEditor.ignoreTrimWhitespace": false,
         "editor.fontWeight": "normal",
         "editor.fontFamily": "'Droid Sans Mono', 'monospace', monospace",
-        "editor.fontSize": 14,
+        "editor.fontSize": 16,
         "editor.wordWrap": "on",
         "editor.quickSuggestions": {
             "comments": "off",
@@ -22,7 +22,7 @@
             "other": "off"
         }
     },
-    "markdown.preview.fontSize": 14,
+    "markdown.preview.fontSize": 16,
     "workbench.editorAssociations": {
         //"*.md": "vscode.markdown.preview.editor"
     },
