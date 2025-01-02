@@ -1,0 +1,21 @@
+[
+  {
+    "function": {
+      "description": "fetch this page",
+      "name": "fetch",
+      "parameters": {
+        "properties": {
+          "url": {
+            "description": "url of the webpage to fetch",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  }
+]

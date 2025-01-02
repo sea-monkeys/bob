@@ -1,1 +1,1 @@
-bob v0.0.1 🌭 [hot dog]
+bob v0.0.2 🥯 [bagel]

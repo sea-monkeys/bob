@@ -1,0 +1,63 @@
+[
+  {
+    "function": {
+      "description": "Say hello to someone",
+      "name": "say_hello",
+      "parameters": {
+        "properties": {
+          "name": {
+            "description": "Name of the person to greet",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  },
+  {
+    "function": {
+      "description": "Say hi to someone",
+      "name": "say_hi",
+      "parameters": {
+        "properties": {
+          "name": {
+            "description": "Name of the person to greet",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  },
+  {
+    "function": {
+      "description": "Greet someone",
+      "name": "greetings",
+      "parameters": {
+        "properties": {
+          "firstName": {
+            "description": "First name of the person to greet",
+            "type": "string"
+          },
+          "lastName": {
+            "description": "Last name of the person to greet",
+            "type": "string"
+          }
+        },
+        "required": [
+          "firstName", "lastName"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  }
+]

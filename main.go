@@ -9,7 +9,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"strings"
 
 	_ "embed"
 
@@ -17,10 +19,24 @@ import (
 	"github.com/ollama/ollama/api"
 )
 
+// --- MCP ---
+type MCPConfig struct {
+	MCPServers map[string]ServerConfig `json:"mcpServers"`
+}
+
+type ServerConfig struct {
+	Command string            `json:"command"`
+	Args    []string          `json:"args"`
+	Env     map[string]string `json:"env,omitempty"`
+}
+
+// --- MCP ---
+
 type Config struct {
-	PromptPath   string
-	SettingsPath string
-	OutputPath   string
+	PromptPath          string
+	ToolsInvocationPath string
+	SettingsPath        string
+	OutputPath          string
 	//Version string
 	System string
 	User   string
@@ -72,11 +88,15 @@ func main() {
 	flag.StringVar(&config.SettingsPath, "settings", ".bob", "Path to settings directory")
 	flag.StringVar(&config.OutputPath, "output", "report.md", "Path to output file")
 
+	flag.StringVar(&config.ToolsInvocationPath, "tools-invocation", "tools.invocation.md", "Path to tools invocation file")
+
 	flag.StringVar(&config.System, "system", "", "System instructions")
 	flag.StringVar(&config.User, "user", "", "User question")
 
 	// Version flag
 	version := flag.Bool("version", false, "Display version information")
+
+	toolsInvocation := flag.Bool("tools", false, "Tools invocation")
 
 	// Parse command line arguments
 	flag.Parse()
@@ -125,13 +145,15 @@ func main() {
 	if model = os.Getenv("LLM"); model == "" {
 		model = "qwen2.5:0.5b"
 	}
+	var toolsModel string
+	if toolsModel = os.Getenv("TOOLS_LLM"); toolsModel == "" {
+		toolsModel = "qwen2.5:0.5b"
+	}
 	// TODO: check if the model is loaded / exists
 	// TODO: add a waiting message
 	// TODO: add an option for the conversational memory
-	// TODO: add MCP support
 	// TODO: add RAG features
 	// TODO: generate the report and its content at the same time (streaming)
-	// TODO: add a flag(s?) for additional files to be sent to the model: --files file1.txt file2.txt
 
 	url, _ := url.Parse(ollamaRawUrl)
 
@@ -140,13 +162,17 @@ func main() {
 	// Model settings
 	// Configuration
 	modelConfigFile, errConf := os.ReadFile(config.SettingsPath + "/settings.json")
-	var modelConfig map[string]interface{}
-	errJsonConf := json.Unmarshal(modelConfigFile, &modelConfig)
-	if errConf != nil || errJsonConf != nil {
-		log.Fatalf("😡 Error reading .settings.json file: %v", errConf)
+	if errConf != nil {
+		log.Fatalf("😡 Error reading settings.json file: %v", errConf)
 	}
 
-	client := api.NewClient(url, http.DefaultClient)
+	var modelConfig map[string]interface{}
+	errJsonConf := json.Unmarshal(modelConfigFile, &modelConfig)
+	if errJsonConf != nil {
+		log.Fatalf("😡 Error unmarshalling settings.json file: %v", errConf)
+	}
+
+	ollamaClient := api.NewClient(url, http.DefaultClient)
 
 	var systemInstructions, userQuestion string
 
@@ -164,7 +190,7 @@ func main() {
 	if config.User != "" {
 		userQuestion = config.User
 	} else {
-		// Load the content of the prompt.txt file
+		// Load the content of the prompt.md file
 		prompt, errPrompt := os.ReadFile(config.PromptPath)
 		if errPrompt != nil {
 			log.Fatalf("😡 Error reading prompt file: %v", errPrompt)
@@ -172,13 +198,107 @@ func main() {
 		userQuestion = string(prompt)
 	}
 
+	messages := []api.Message{}
+	messages = append(messages, api.Message{Role: "system", Content: systemInstructions})
+
+	// ==========================================================
+	// Tools
+	// ==========================================================
+	promptContext := "<documents>"
+
+	if *toolsInvocation {
+		// Tool invocation
+		//fmt.Println("🙂 Tool invocation not implemented yet")
+
+		// Read tools
+		toolsConfigFile, errToolsConf := os.ReadFile(config.SettingsPath + "/tools.json")
+		if errToolsConf != nil {
+			log.Fatalf("😡 Error reading tools.json file: %v", errToolsConf)
+		}
+		var toolsList api.Tools
+		errJsonToolsConf := json.Unmarshal(toolsConfigFile, &toolsList)
+		if errJsonToolsConf != nil {
+			log.Fatalf("😡 Error unmarshalling tools.json file: %v", errJsonToolsConf)
+		}
+
+		// Load the content of the tools.invocation.md file
+		toolsPrompt, errPrompt := os.ReadFile(config.ToolsInvocationPath)
+		if errPrompt != nil {
+			log.Fatalf("😡 Error reading tools.invocation file: %v", errPrompt)
+		}
+		tools := strings.Split(string(toolsPrompt), "---")
+		//fmt.Println("🛠️", tools)
+
+		// Tools Prompt construction
+		messagesForTools := []api.Message{}
+		for _, tool := range tools {
+			messagesForTools = append(messagesForTools, api.Message{Role: "user", Content: tool})
+		}
+
+		req := &api.ChatRequest{
+			Model:    toolsModel,
+			Messages: messagesForTools,
+			Options: map[string]interface{}{
+				"temperature": 0.0,
+			},
+			Tools:  toolsList,
+			Stream: &FALSE,
+		}
+
+
+		err := ollamaClient.Chat(ctx, req, func(resp api.ChatResponse) error {
+
+			for _, toolCall := range resp.Message.ToolCalls {
+				fmt.Println("🛠️", toolCall.Function.Name, toolCall.Function.Arguments)
+
+				// Convert map to slice of arguments
+				cmdArgs := []string{config.SettingsPath + "/" + toolCall.Function.Name+".sh"}
+				for _, v := range toolCall.Function.Arguments {
+					cmdArgs = append(cmdArgs, v.(string))
+				}
+
+				cmd := exec.Command("bash", cmdArgs...)
+				output, err := cmd.Output()
+				if err != nil {
+					panic(err)
+				}
+				//fmt.Println("🤖", string(output))
+
+				// Add the output to the context
+				promptContext += "<document>"+string(output)+"</document>"
+
+				//messages = append(messages, api.Message{Role: "system", Content: string(output)})
+
+			}
+			promptContext += "</documents>"
+			fmt.Println()
+
+			//fmt.Println("🤖", promptContext)
+
+			//messages = append(messages, api.Message{Role: "system", Content: "CONTEXT:\n" + promptContext})
+			return nil
+		})
+
+		if err != nil {
+			log.Fatalln("😡", err)
+		}
+
+	} // end of tool invocation
+	// ==========================================================
+
 	// Prompt construction
-	messages := []api.Message{
+	if promptContext != "" {
+		userQuestion = promptContext + "\n\n" + userQuestion
+	}
+	messages = append(messages, api.Message{Role: "user", Content: userQuestion})
+
+	/*
+	messages = []api.Message{
 		{Role: "system", Content: systemInstructions},
 		{Role: "user", Content: userQuestion},
 	}
+	*/
 
-	// test if code source empty
 
 	req := &api.ChatRequest{
 		Model:    model,
@@ -187,8 +307,9 @@ func main() {
 		Stream:   &TRUE,
 	}
 
+	// Send the request to the server
 	answer := ""
-	errCompletion := client.Chat(ctx, req, func(resp api.ChatResponse) error {
+	errCompletion := ollamaClient.Chat(ctx, req, func(resp api.ChatResponse) error {
 		answer += resp.Message.Content
 		fmt.Print(resp.Message.Content)
 		return nil
@@ -203,4 +324,5 @@ func main() {
 	if errOutput != nil {
 		log.Fatalf("😡 Error writing output file: %v", errOutput)
 	}
+	fmt.Println()
 }

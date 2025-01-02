@@ -47,8 +47,16 @@ bob --prompt prompt.md --settings .bob --output report.md
 --prompt  # Path to prompt file (default: prompt.md)
 --settings # Path to settings directory (default: .bob)
 --output   # Path to output file (default: report.md)
+--tools    # Activate the support for tools invocation
 ```
 
 > You can override the content of the `prompt.md` and the `instructions.md` files with the `--system` and `--user` flags: `bob --system "you are a pizza expert" --user "what is the best pizza in the world?"`.
 
 The application reads your prompt, sends it to Ollama with the specified configuration, and saves the LLM's response to the output file.
+
+## Tools invocation
+
+See the samples in the `samples` directory for examples of how to use tools invocation:
+
+- [Use Tools](samples/use-tools)
+- [Summarize web page](samples/summarize-web-page)
