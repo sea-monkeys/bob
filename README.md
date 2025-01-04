@@ -45,9 +45,12 @@ bob --prompt prompt.md --settings .bob --output report.md
 ```bash
 --version # Shows version info
 --prompt  # Path to prompt file (default: prompt.md)
+--context # Path to context file (default: context.md)
 --settings # Path to settings directory (default: .bob)
 --output   # Path to output file (default: report.md)
 --tools    # Activate the support for tools invocation
+--schema   # Extract data from the generated content (JSON structured output)
+--rag      # Create or update a Vector store from a content directory
 ```
 
 > You can override the content of the `prompt.md` and the `instructions.md` files with the `--system` and `--user` flags: `bob --system "you are a pizza expert" --user "what is the best pizza in the world?"`.
@@ -60,3 +63,15 @@ See the samples in the `samples` directory for examples of how to use tools invo
 
 - [Use Tools](samples/use-tools)
 - [Summarize web page](samples/summarize-web-page)
+
+## Structured JSON output
+
+See the samples in the `samples` directory for examples of how to use structured JSON output:
+
+- [Extract data](samples/extract-data)
+
+## RAG support
+
+See the samples in the `samples` directory for examples of how to use RAG support:
+
+- [Chronicles of Aethelgard](samples/chronicles-of-aethelgard)

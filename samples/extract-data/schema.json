@@ -1,0 +1,34 @@
+{
+    "properties": {
+      "average_length": {
+        "type": "number"
+      },
+      "average_lifespan": {
+        "type": "number"
+      },
+      "average_weight": {
+        "type": "number"
+      },
+      "countries": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "main_species": {
+        "type": "string"
+      },
+      "scientific_name": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "scientific_name",
+      "main_species",
+      "average_length",
+      "average_lifespan",
+      "average_weight",
+      "countries"
+    ],
+    "type": "object"
+}

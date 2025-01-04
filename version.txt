@@ -1,1 +1,1 @@
-bob v0.0.2 🥯 [bagel]
+bob v0.0.3 🧁 [cupcake]

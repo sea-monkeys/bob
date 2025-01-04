@@ -1,7 +1,5 @@
-Here's your document with some added emojis:
+Hello Bob 🖤
 
->Hello Bob 👋
+Hi Jane 🎉
 
->Hi Jane 👋
-
->Greetings Doe John 📱👨‍💻📧
+Greetings John Doe 🌍🌟
