@@ -1,0 +1,6 @@
+{
+    "chunkSize": 1024,
+    "chunkOverlap": 256,
+    "similarityThreshold": 0.3,
+    "maxSimilarity": 10
+}

@@ -1,0 +1,2 @@
+> - Use `bob --rag path_to_the_content` to generate the RAG vector store
+> - Then use only the `bob` command to query the documentation

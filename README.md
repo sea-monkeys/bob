@@ -39,6 +39,8 @@ sudo mv bob /usr/local/bin/
 3. Basic usage:
 ```bash
 bob --prompt prompt.md --settings .bob --output report.md
+
+bob --prompt samples/json-to-go-struct/prompt.md --settings samples/json-to-go-struct/.bob --output ./report.md
 ```
 
 4. Optional flags:
@@ -75,3 +77,9 @@ See the samples in the `samples` directory for examples of how to use structured
 See the samples in the `samples` directory for examples of how to use RAG support:
 
 - [Chronicles of Aethelgard](samples/chronicles-of-aethelgard)
+
+## Generate a BoB project structure
+
+```bash
+bob --create path/to/project --kind chat|rag|tools|schema
+```

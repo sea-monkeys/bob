@@ -1,0 +1,21 @@
+[
+  {
+    "function": {
+      "description": "Say hello to someone",
+      "name": "say_hello",
+      "parameters": {
+        "properties": {
+          "name": {
+            "description": "Name of the person to greet",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  }
+]

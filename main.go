@@ -25,9 +25,8 @@ import (
 // TODO: check if the model is loaded / exists
 // TODO: add a waiting message
 // TODO: add an option for the conversational memory
-// TODO: add RAG features: https://k33g.hashnode.dev/rag-from-scratch-with-go-and-ollama?source=more_series_bottom_blogs
 // TODO: generate the report and its content at the same time (streaming)
-// TODO: add a command to generate project files
+// TODO: add a command to override the context like with system and user questions
 
 type RagConfig struct {
 	ChunkSize           int     `json:"chunkSize"`
@@ -45,6 +44,10 @@ type Config struct {
 	SettingsPath     string
 	OutputPath       string
 	RagDocumentsPath string // for RAG
+
+	// Generate a project structure
+	ProjectPathName string
+	KindOfProject   string
 
 	// to override the system and user questions
 	System string
@@ -105,6 +108,95 @@ var (
 //go:embed version.txt
 var versionTxt []byte
 
+// Sample RAG files
+
+//go:embed sample.rag.env.txt
+var sampleRagEnv []byte
+
+//go:embed sample.rag.instructions.txt
+var sampleRagInstructions []byte
+
+//go:embed sample.rag.parameters.txt
+var sampleRagParameters []byte
+
+//go:embed sample.rag.settings.txt
+var sampleRagSettings []byte
+
+//go:embed sample.rag.content.txt
+var sampleRagContent []byte
+
+//go:embed sample.rag.prompt.txt
+var sampleRagPrompt []byte
+
+//go:embed sample.rag.readme.txt
+var sampleRagReadme []byte
+
+// Sample Schema files
+
+//go:embed sample.schema.context.txt
+var sampleSchemaContext []byte
+
+//go:embed sample.schema.env.txt
+var sampleSchemaEnv []byte
+
+//go:embed sample.schema.instructions.txt
+var sampleSchemaInstructions []byte
+
+//go:embed sample.schema.prompt.txt
+var sampleSchemaPrompt []byte
+
+//go:embed sample.schema.schema.txt
+var sampleSchemaSchema []byte
+
+//go:embed sample.schema.settings.txt
+var sampleSchemaSettings []byte
+
+//go:embed sample.schema.readme.txt
+var sampleSchemaReadme []byte
+
+// Sample Chat files
+
+//go:embed sample.chat.env.txt
+var sampleChatEnv []byte
+
+//go:embed sample.chat.instructions.txt
+var sampleChatInstructions []byte
+
+//go:embed sample.chat.prompt.txt
+var sampleChatPrompt []byte
+
+//go:embed sample.chat.settings.txt
+var sampleChatSettings []byte
+
+//go:embed sample.chat.readme.txt
+var sampleChatReadme []byte
+
+// Sample Tools files
+
+//go:embed sample.tools.env.txt
+var sampleToolsEnv []byte
+
+//go:embed sample.tools.instructions.txt
+var sampleToolsInstructions []byte
+
+//go:embed sample.tools.invocation.txt
+var sampleToolsInvocation []byte
+
+//go:embed sample.tools.prompt.txt
+var sampleToolsPrompt []byte
+
+//go:embed sample.tools.say_hello.txt
+var sampleToolsSayHello []byte
+
+//go:embed sample.tools.settings.txt
+var sampleToolsSettings []byte
+
+//go:embed sample.tools.tools.txt
+var sampleToolsTools []byte
+
+//go:embed sample.tools.readme.txt
+var sampleToolsReadme []byte
+
 func main() {
 	config := Config{}
 
@@ -119,6 +211,10 @@ func main() {
 	flag.StringVar(&config.JsonSchemaPath, "json-schema", "schema.json", "Path to JSON schema file")
 	flag.StringVar(&config.ContextPath, "context", "context.md", "Path to context file")
 
+	// Project structure
+	flag.StringVar(&config.ProjectPathName, "create", "", "Project path name")
+	flag.StringVar(&config.KindOfProject, "kind", "chat", "Kind of project")
+
 	flag.StringVar(&config.System, "system", "", "System instructions")
 	flag.StringVar(&config.User, "user", "", "User question")
 
@@ -132,6 +228,125 @@ func main() {
 
 	// Parse command line arguments
 	flag.Parse()
+
+	// Create project structure
+	if config.ProjectPathName != "" {
+
+		// title is the last part of the path config.ProjectPathName
+		title := filepath.Base(config.ProjectPathName)
+		// The first letter must be uppercase
+		title = strings.ToUpper(title[:1]) + title[1:]
+
+		var files map[string]string
+		var dirs []string
+
+		switch kind := config.KindOfProject; kind {
+		case "chat": // bob --create samples/coucou --kind chat
+
+			dirs = []string{
+				config.ProjectPathName,
+				config.ProjectPathName + "/.bob",
+			}
+
+			// Define file contents
+			files = map[string]string{
+				filepath.Join(config.ProjectPathName, ".bob", ".env"):            string(sampleChatEnv),
+				filepath.Join(config.ProjectPathName, ".bob", "instructions.md"): string(sampleChatInstructions),
+				filepath.Join(config.ProjectPathName, ".bob", "settings.json"):   string(sampleChatSettings),
+				filepath.Join(config.ProjectPathName, "prompt.md"):               string(sampleChatPrompt),
+				filepath.Join(config.ProjectPathName, "README.md"):               "# " + title + "\n" + string(sampleChatReadme),
+			}
+
+		case "tools": // bob --create samples/coucou --kind tools
+
+			dirs = []string{
+				config.ProjectPathName,
+				config.ProjectPathName + "/.bob",
+			}
+
+			// Define file contents
+			files = map[string]string{
+				filepath.Join(config.ProjectPathName, ".bob", ".env"):            string(sampleToolsEnv),
+				filepath.Join(config.ProjectPathName, ".bob", "instructions.md"): string(sampleToolsInstructions),
+				filepath.Join(config.ProjectPathName, ".bob", "settings.json"):   string(sampleToolsSettings),
+				filepath.Join(config.ProjectPathName, ".bob", "tools.json"):      string(sampleToolsTools),
+				filepath.Join(config.ProjectPathName, ".bob", "say_hello.sh"):    string(sampleToolsSayHello),
+
+				filepath.Join(config.ProjectPathName, "tools.invocation.md"): string(sampleToolsInvocation),
+				filepath.Join(config.ProjectPathName, "prompt.md"):           string(sampleToolsPrompt),
+				filepath.Join(config.ProjectPathName, "README.md"):           "# " + title + "\n" + string(sampleToolsReadme),
+			}
+
+		case "rag": // bob --create samples/coucou --kind rag
+
+			dirs = []string{
+				filepath.Join(config.ProjectPathName, ".bob"),
+				filepath.Join(config.ProjectPathName, "content"),
+			}
+
+			// Define files and their contents
+			files = map[string]string{
+				filepath.Join(config.ProjectPathName, ".bob", ".env"):            string(sampleRagEnv),
+				filepath.Join(config.ProjectPathName, ".bob", "instructions.md"): string(sampleRagInstructions),
+				filepath.Join(config.ProjectPathName, ".bob", "rag.json"):        string(sampleRagParameters),
+				filepath.Join(config.ProjectPathName, ".bob", "settings.json"):   string(sampleRagSettings),
+				filepath.Join(config.ProjectPathName, "content", "content.txt"):  string(sampleRagContent),
+				filepath.Join(config.ProjectPathName, "prompt.md"):               string(sampleRagPrompt),
+				filepath.Join(config.ProjectPathName, "README.md"):               "# " + title + "\n" + string(sampleRagReadme),
+			}
+
+		case "schema": // bob --create samples/coucou --kind schema
+
+			dirs = []string{
+				config.ProjectPathName,
+				config.ProjectPathName + "/.bob",
+			}
+
+			// Define file contents
+			files = map[string]string{
+				filepath.Join(config.ProjectPathName, ".bob", ".env"):            string(sampleSchemaEnv),
+				filepath.Join(config.ProjectPathName, ".bob", "instructions.md"): string(sampleSchemaInstructions),
+				filepath.Join(config.ProjectPathName, ".bob", "settings.json"):   string(sampleSchemaSettings),
+				filepath.Join(config.ProjectPathName, "context.md"):              string(sampleSchemaContext),
+				filepath.Join(config.ProjectPathName, "prompt.md"):               string(sampleSchemaPrompt),
+				filepath.Join(config.ProjectPathName, "README.md"):               "# " + title + "\n" + string(sampleSchemaReadme),
+				filepath.Join(config.ProjectPathName, "schema.json"):             string(sampleSchemaSchema),
+			}
+
+		default:
+			fmt.Println("🤖🤔 Kind of project not found")
+		}
+
+		// Create directories
+		for _, dir := range dirs {
+			if err := os.MkdirAll(dir, 0755); err != nil {
+				fmt.Printf("😡 Error creating directory %s: %v\n", dir, err)
+				return
+			}
+		}
+
+		// Create and write to files
+		for path, content := range files {
+			if filepath.Base(path) == "say_hello.sh" {
+				// Make the file executable
+				err := os.WriteFile(path, []byte(content), 0755)
+				if err != nil {
+					fmt.Printf("😡 Error writing to file %s: %v\n", path, err)
+				}
+				continue
+			} else {
+				err := os.WriteFile(path, []byte(content), 0644)
+				if err != nil {
+					fmt.Printf("😡 Error writing to file %s: %v\n", path, err)
+					return
+				}
+			}
+		}
+
+		fmt.Println("🎉 BoB project structure created successfully.")
+
+		os.Exit(0)
+	}
 
 	// Check for version flag
 	if *version {
@@ -151,13 +366,6 @@ func main() {
 		fmt.Printf("😡 Error: %v\n", err)
 		os.Exit(1)
 	}
-
-	/*
-		fmt.Printf("Processing with:\n")
-		fmt.Printf("  Prompt: %s\n", config.PromptPath)
-		fmt.Printf("  Settings: %s\n", config.SettingsPath)
-		fmt.Printf("  Output: %s\n", config.OutputPath)
-	*/
 
 	// Main logic
 	ctx := context.Background()
@@ -455,7 +663,7 @@ func main() {
 		// check if chunks.gob exists
 		_, err := os.Stat(config.SettingsPath + "/chunks.gob")
 		if err == nil { // then time to load the vector store and search for the closest chunks
-			
+
 			fmt.Println("📝🤖 using:", ollamaRawUrl, embeddingsModel, "for RAG.")
 
 			// Load the json rag config file
