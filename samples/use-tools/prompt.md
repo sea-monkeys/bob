@@ -1,1 +1,1 @@
-Use the provided context and rewrite it with fancy emojis.
+Use the provided content and rewrite it with fancy emojis.

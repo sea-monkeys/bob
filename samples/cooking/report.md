@@ -1,28 +1,33 @@
-Bien sûr, voici une recette originale de pot au feu pour vous :
+Bien sûr, voici une recette originale de pot-au-feu :
 
 Ingrédients :
 
-* 1 kg de viande de boeuf pour le pot au feu (par exemple, un morceau de paleron, un morceau de gîte à la noix et un morceau de joue)
-* 2 oignons
+* 1 kg de viande de bœuf à pot-au-feu
+* 1 oignon piqué de clous de girofle
 * 2 carottes
 * 2 branches de céleri
-* 4 gousses d'ail
-* 1 bouquet garni (thym, laurier, persil)
-* 2 feuilles de laurier
+* 1 feuille de laurier
+* 1 bouquet garni (thym, persil, sauge)
+* 2 gousses d'ail non pelées
 * 1 cuillère à soupe de concentré de tomate
+* Sel et poivre noir moulu
 * 1 cuillère à soupe de farine
-* Sel et poivre noir
-* 2 litres d'eau ou de bouillon de viande
+* 2 cuillères à soupe d'huile d'olive
+* 2 litres d'eau ou de bouillon de bœuf
+* 500 g de pommes de terre nouvelles
+* 1 chou vert coupé en quartiers
+* 1 branche de persil frais haché pour la garniture
 
 Instructions :
 
-1. Couper la viande en gros morceaux et les saupoudrer de sel et de poivre noir.
-2. Dans une grande marmite, faire chauffer un peu d'huile d'olive et ajouter les oignons coupés en quartiers, les carottes coupées en rondelles, le céleri coupé en tronçons et l'ail écrasé. Faire revenir pendant 5 minutes en remuant souvent.
-3. Ajouter la viande dans la marmite et la faire dorer sur tous les côtés pendant 5-7 minutes.
-4. Ajouter le concentré de tomate, la farine, les feuilles de laurier et le bouquet garni. Remuer pour que la farine se dissolve bien.
-5. Ajouter l'eau ou le bouillon de viande et laisser mijoter à feu moyen pendant environ 3 heures, en couvrant la marmite. Ajouter de l'eau si nécessaire.
-6. Une fois que la viande est tendre, ajouter les légumes que vous souhaitez servir avec le pot au feu (par exemple, des navets, des rutabagas, des pommes de terre, des panais, etc.). Faire cuire pendant environ 30 minutes supplémentaires ou jusqu'à ce que les légumes soient tendres.
-7. Retirer la viande et les légumes de la marmite et les mettre dans une assiette. Laisser le bouillon mijoter pendant quelques minutes supplémentaires pour le réduire un peu.
-8. Servir la viande et les légumes dans des assiettes avec une louche de bouillon par-dessus. Bon appétit !
+1. Dans une grande casserole ou une marmite en fonte, faites chauffer l'huile d'olive à feu moyen-doux.
+2. Ajoutez l'oignon piqué de clous de girofle et faites-le dorer pendant environ 5 minutes.
+3. Ajoutez la viande de bœuf dans la casserole et faites-la dorer de tous les côtés pendant environ 10 minutes.
+4. Ajoutez les carottes, le céleri, la feuille de laurier, le bouquet garni, les gousses d'ail non pelées, le concentré de tomate, le sel et le poivre noir moulu. Mélangez bien.
+5. Ajoutez la farine et mélangez de nouveau pour enrober la viande et les légumes.
+6. Ajoutez l'eau ou le bouillon de bœuf et portez à ébullition. Réduisez ensuite le feu à moyen-doux et laissez mijoter pendant environ 2 heures.
+7. Ajoutez les pommes de terre nouvelles et le chou vert dans la casserole et laissez cuire pendant environ 30 minutes supplémentaires ou jusqu'à ce que les légumes soient tendres.
+8. Goûtez et ajustez l'assaisonnement si nécessaire.
+9. Servez le pot-au-feu dans des bols ou des assiettes creuses, en ajoutant une branche de persil frais haché pour la garniture.
 
-Cette recette est une version revisitée du classique pot au feu français, avec l'ajout de concentré de tomate et de farine pour ajouter de la saveur et de l'onctuosité au bouillon. Vous pouvez bien sûr adapter les ingrédients et les légumes selon vos goûts et les saisons.
+Bonne dégustation !

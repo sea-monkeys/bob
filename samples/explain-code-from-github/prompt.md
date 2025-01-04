@@ -1,1 +1,1 @@
-Explain the provided code and generate sequence and state mermaid diagrams
+Explain the provided source code and generate sequence and state mermaid diagrams

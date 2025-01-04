@@ -1,81 +1,63 @@
-The provided code is a Go program that interacts with an Ollama language model to generate a response to a given prompt. Here's a detailed explanation of the code and the corresponding sequence and state Mermaid diagrams:
+This Go program is a command-line tool that interacts with an Ollama API to perform various tasks such as chat completion, embedding generation, and retrieval-augmented generation (RAG). The program is designed to be flexible and configurable through command-line flags and configuration files. Below is a detailed breakdown of the program's functionality and components:
 
-### Code Explanation
+### Key Components
 
-1. **Import Statements**:
-   - The program imports necessary packages such as `context`, `log`, `os`, `exec`, `strings`, and custom packages `api` and `tools`.
+1. **Command-Line Flags**:
+   - `--model`: Specifies the model to use for chat completion.
+   - `--embeddings-model`: Specifies the model to use for embedding generation.
+   - `--json-schema`: Indicates whether to use a JSON schema for the response format.
+   - `--tools`: Indicates whether to use tools for the response.
+   - `--rag`: Indicates whether to use retrieval-augmented generation.
+   - `--tools-config`: Specifies the path to the tools configuration file.
+   - `--rag-config`: Specifies the path to the RAG configuration file.
+   - `--json-schema-path`: Specifies the path to the JSON schema file.
+   - `--settings-path`: Specifies the path to the settings directory.
+   - `--output-path`: Specifies the path to the output file.
+   - `--ollama-raw-url`: Specifies the URL of the Ollama API.
 
-2. **Main Function**:
-   - The `main` function is the entry point of the program.
-   - It defines several variables to store paths and configurations.
+2. **Configuration Files**:
+   - `settings.json`: Contains configuration settings for the program.
+   - `rag.json`: Contains configuration settings for retrieval-augmented generation.
+   - `schema.json`: Contains a JSON schema for the response format.
 
-3. **Error Handling**:
-   - The program uses `log.Fatalf` to handle errors and terminate execution if an error occurs.
+3. **Main Functionality**:
+   - **Initialization**: The program initializes various components such as the Ollama client, configuration settings, and vector store.
+   - **Embedding Generation**: If the `--embeddings-model` flag is set, the program generates embeddings for the input question.
+   - **Retrieval-Augmented Generation (RAG)**: If the `--rag` flag is set, the program searches for similar chunks in a vector store and uses them to augment the response.
+   - **Chat Completion**: The program sends a chat completion request to the Ollama API and processes the response.
+   - **Output**: The final response is written to an output file in Markdown format.
 
-4. **Reading Configuration Files**:
-   - The program reads configuration files such as `tools.json` and `prompt.md` using `os.ReadFile`.
+### Detailed Steps
 
-5. **Building Messages**:
-   - The program constructs messages to be sent to the Ollama model. It includes system instructions and user input.
+1. **Initialization**:
+   - The program starts by parsing command-line flags and loading configuration files.
+   - It initializes the Ollama client with the specified URL.
+   - It loads the settings from the `settings.json` file and sets up the vector store if necessary.
 
-6. **Handling Tool Invocation**:
-   - If the `toolsInvocation` flag is set, the program handles tool invocation:
-     - Reads tool configurations.
-     - Executes tools based on the response from the Ollama model.
-     - Updates the context with the tool outputs.
+2. **Embedding Generation**:
+   - If the `--embeddings-model` flag is set, the program generates embeddings for the input question using the specified embeddings model.
+   - The embeddings are used to search for similar chunks in the vector store.
 
-7. **Sending Request to Ollama Model**:
-   - The program sends a chat request to the Ollama model with the constructed messages and options.
+3. **Retrieval-Augmented Generation (RAG)**:
+   - If the `--rag` flag is set, the program searches for similar chunks in the vector store based on the generated embeddings.
+   - The similar chunks are used to augment the context for the chat completion request.
 
-8. **Processing Response**:
-   - The program processes the response from the Ollama model, appending the content to the `answer` string.
+4. **Chat Completion**:
+   - The program constructs a chat completion request with the appropriate messages and options.
+   - If the `--json-schema` flag is set, the program uses a JSON schema for the response format.
+   - The program sends the chat completion request to the Ollama API and processes the response.
 
-9. **Writing Output**:
-   - The program writes the final response to an output file specified by `config.OutputPath`.
+5. **Output**:
+   - The final response is written to an output file in Markdown format.
 
-### Sequence Diagram
+### Example Usage
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant GoProgram
-    participant OllamaModel
-
-    User->>GoProgram: Start program
-    GoProgram->>GoProgram: Initialize variables
-    GoProgram->>GoProgram: Read configuration files
-    GoProgram->>GoProgram: Construct messages
-    GoProgram->>GoProgram: Check toolsInvocation flag
-    GoProgram->>GoProgram: Handle tool invocation (if enabled)
-    GoProgram->>OllamaModel: Send chat request
-    OllamaModel-->>GoProgram: Receive response
-    GoProgram->>GoProgram: Process response
-    GoProgram->>GoProgram: Update context with tool outputs
-    GoProgram->>OllamaModel: Send updated chat request
-    OllamaModel-->>GoProgram: Receive final response
-    GoProgram->>GoProgram: Construct final answer
-    GoProgram->>User: Write output to file
+```sh
+go run main.go --model "gpt-4" --embeddings-model "text-embedding-ada-002" --rag --settings-path "./settings" --output-path "./output.md"
 ```
 
-### State Diagram
+This command would run the program with the specified model, embeddings model, and RAG settings, and write the output to `output.md`.
 
-```mermaid
-stateDiagram-v2
-    [*] --> Initializing : Start program
-    Initializing --> ReadingConfig : Initialize variables
-    ReadingConfig --> ConstructingMessages : Read configuration files
-    ConstructingMessages --> CheckingToolsInvocation : Construct messages
-    CheckingToolsInvocation --> HandlingToolsInvocation : toolsInvocation flag is true
-    HandlingToolsInvocation --> SendingRequest : Handle tool invocation
-    CheckingToolsInvocation --> SendingRequest : toolsInvocation flag is false
-    SendingRequest --> ReceivingResponse : Send chat request to Ollama model
-    ReceivingResponse --> ProcessingResponse : Receive response
-    ProcessingResponse --> UpdatingContext : Process response
-    UpdatingContext --> SendingUpdatedRequest : Update context with tool outputs
-    SendingUpdatedRequest --> ReceivingFinalResponse : Send updated chat request
-    ReceivingFinalResponse --> ConstructingFinalAnswer : Receive final response
-    ConstructingFinalAnswer --> WritingOutput : Construct final answer
-    WritingOutput --> [*] : Write output to file
-```
+### Conclusion
 
-These diagrams provide a visual representation of the sequence of events and the state transitions within the program.
+This program is a versatile tool for interacting with the Ollama API, providing functionalities such as chat completion, embedding generation, and retrieval-augmented generation. It is designed to be highly configurable and can be adapted to various use cases by modifying the configuration files and command-line flags.

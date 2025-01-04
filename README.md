@@ -65,6 +65,31 @@ See the samples in the `samples` directory for examples of how to use tools invo
 
 - [Use Tools](samples/use-tools)
 - [Summarize web page](samples/summarize-web-page)
+- [Explain code from GitHub](samples/explain-code-from-github)
+
+If you want to use tools invocation, you need to add the `--tools` flag to the command.
+
+If you want to add the result of the tool(s) invocation as a `user` message, after the user's question, use this command.
+```bash
+bob --tools --as-user --after-question
+# or
+bob --tools --as-user
+# or (default)
+bob --tools
+```
+
+If you want to add the result of the tool(s) invocation as a `user` message, before the user's question, use this command.
+```bash
+bob --tools --as-user --before-question
+```
+
+If you want to add the result of the tool(s) invocation as a `system` message, use this command.
+```bash
+bob --tools --as-system
+```
+> The result will be added as a `system` message before the user question to the messages list.
+
+
 
 ## Structured JSON output
 
@@ -82,4 +107,10 @@ See the samples in the `samples` directory for examples of how to use RAG suppor
 
 ```bash
 bob --create path/to/project --kind chat|rag|tools|schema
+```
+
+## Add the content of a file at the end of the messages list
+
+```bash
+bob --add-to-messages path/to/file
 ```

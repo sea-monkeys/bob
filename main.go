@@ -1,3 +1,4 @@
+// Source code
 package main
 
 import (
@@ -52,6 +53,9 @@ type Config struct {
 	// to override the system and user questions
 	System string
 	User   string
+
+	// --add-to-messages ../../main.go --as-user --after-question
+	AddToMessages string
 }
 
 func validatePaths(config Config) error {
@@ -110,91 +114,91 @@ var versionTxt []byte
 
 // Sample RAG files
 
-//go:embed sample.rag.env.txt
+//go:embed templates/sample.rag.env.txt
 var sampleRagEnv []byte
 
-//go:embed sample.rag.instructions.txt
+//go:embed templates/sample.rag.instructions.txt
 var sampleRagInstructions []byte
 
-//go:embed sample.rag.parameters.txt
+//go:embed templates/sample.rag.parameters.txt
 var sampleRagParameters []byte
 
-//go:embed sample.rag.settings.txt
+//go:embed templates/sample.rag.settings.txt
 var sampleRagSettings []byte
 
-//go:embed sample.rag.content.txt
+//go:embed templates/sample.rag.content.txt
 var sampleRagContent []byte
 
-//go:embed sample.rag.prompt.txt
+//go:embed templates/sample.rag.prompt.txt
 var sampleRagPrompt []byte
 
-//go:embed sample.rag.readme.txt
+//go:embed templates/sample.rag.readme.txt
 var sampleRagReadme []byte
 
 // Sample Schema files
 
-//go:embed sample.schema.context.txt
+//go:embed templates/sample.schema.context.txt
 var sampleSchemaContext []byte
 
-//go:embed sample.schema.env.txt
+//go:embed templates/sample.schema.env.txt
 var sampleSchemaEnv []byte
 
-//go:embed sample.schema.instructions.txt
+//go:embed templates/sample.schema.instructions.txt
 var sampleSchemaInstructions []byte
 
-//go:embed sample.schema.prompt.txt
+//go:embed templates/sample.schema.prompt.txt
 var sampleSchemaPrompt []byte
 
-//go:embed sample.schema.schema.txt
+//go:embed templates/sample.schema.schema.txt
 var sampleSchemaSchema []byte
 
-//go:embed sample.schema.settings.txt
+//go:embed templates/sample.schema.settings.txt
 var sampleSchemaSettings []byte
 
-//go:embed sample.schema.readme.txt
+//go:embed templates/sample.schema.readme.txt
 var sampleSchemaReadme []byte
 
 // Sample Chat files
 
-//go:embed sample.chat.env.txt
+//go:embed templates/sample.chat.env.txt
 var sampleChatEnv []byte
 
-//go:embed sample.chat.instructions.txt
+//go:embed templates/sample.chat.instructions.txt
 var sampleChatInstructions []byte
 
-//go:embed sample.chat.prompt.txt
+//go:embed templates/sample.chat.prompt.txt
 var sampleChatPrompt []byte
 
-//go:embed sample.chat.settings.txt
+//go:embed templates/sample.chat.settings.txt
 var sampleChatSettings []byte
 
-//go:embed sample.chat.readme.txt
+//go:embed templates/sample.chat.readme.txt
 var sampleChatReadme []byte
 
 // Sample Tools files
 
-//go:embed sample.tools.env.txt
+//go:embed templates/sample.tools.env.txt
 var sampleToolsEnv []byte
 
-//go:embed sample.tools.instructions.txt
+//go:embed templates/sample.tools.instructions.txt
 var sampleToolsInstructions []byte
 
-//go:embed sample.tools.invocation.txt
+//go:embed templates/sample.tools.invocation.txt
 var sampleToolsInvocation []byte
 
-//go:embed sample.tools.prompt.txt
+//go:embed templates/sample.tools.prompt.txt
 var sampleToolsPrompt []byte
 
-//go:embed sample.tools.say_hello.txt
+//go:embed templates/sample.tools.say_hello.txt
 var sampleToolsSayHello []byte
 
-//go:embed sample.tools.settings.txt
+//go:embed templates/sample.tools.settings.txt
 var sampleToolsSettings []byte
 
-//go:embed sample.tools.tools.txt
+//go:embed templates/sample.tools.tools.txt
 var sampleToolsTools []byte
 
-//go:embed sample.tools.readme.txt
+//go:embed templates/sample.tools.readme.txt
 var sampleToolsReadme []byte
 
 func main() {
@@ -211,6 +215,8 @@ func main() {
 	flag.StringVar(&config.JsonSchemaPath, "json-schema", "schema.json", "Path to JSON schema file")
 	flag.StringVar(&config.ContextPath, "context", "context.md", "Path to context file")
 
+	flag.StringVar(&config.AddToMessages, "add-to-messages", "", "Add to messages")
+
 	// Project structure
 	flag.StringVar(&config.ProjectPathName, "create", "", "Project path name")
 	flag.StringVar(&config.KindOfProject, "kind", "chat", "Kind of project")
@@ -226,6 +232,11 @@ func main() {
 	// use bob --schema to use a JSON schema
 	jsonSchema := flag.Bool("schema", false, "JSON schema")
 
+	asUserMessage := flag.Bool("as-user", false, "As user message")
+	asSystemMessage := flag.Bool("as-system", false, "As system message")
+
+	beforeQuestion := flag.Bool("before-question", false, "Before user question")
+	afterQuestion := flag.Bool("after-question", false, "After user question")
 	// Parse command line arguments
 	flag.Parse()
 
@@ -524,6 +535,7 @@ func main() {
 	var contextContent []byte
 	// Check if the context file exists
 	if _, err := os.Stat(config.ContextPath); err == nil {
+
 		// Load the content of the context.md file
 		var errContext error
 		contextContent, errContext = os.ReadFile(config.ContextPath)
@@ -542,7 +554,7 @@ func main() {
 	toolsContext := ""
 
 	if *toolsInvocation {
-		toolsContext += "<documents>"
+
 		// Tool invocation
 		fmt.Println("🛠️🤖 using:", ollamaRawUrl, toolsModel, "for tools")
 
@@ -600,14 +612,12 @@ func main() {
 				//fmt.Println("🤖", string(output))
 
 				// Add the output to the context
-				toolsContext += "<document>" + string(output) + "</document>"
-
+				toolsContext += string(output)
 				//messages = append(messages, api.Message{Role: "system", Content: string(output)})
 
 			}
-			toolsContext += "</documents>"
-			fmt.Println()
 
+			fmt.Println()
 			//fmt.Println("🤖", promptContext)
 
 			//messages = append(messages, api.Message{Role: "system", Content: "CONTEXT:\n" + promptContext})
@@ -620,19 +630,6 @@ func main() {
 
 	} // end of tool invocation
 	// ==========================================================
-
-	// Prompt construction
-	if toolsContext != "" {
-		messages = append(messages, api.Message{Role: "system", Content: toolsContext})
-		//userQuestion = promptContext + "\n\n" + userQuestion
-	}
-
-	/*
-		messages = []api.Message{
-			{Role: "system", Content: systemInstructions},
-			{Role: "user", Content: userQuestion},
-		}
-	*/
 
 	var req *api.ChatRequest
 
@@ -654,7 +651,7 @@ func main() {
 			Format:   json.RawMessage(schema),
 		}
 
-	} else { // classic chat completion
+	} else { // classic chat completion with RAG or not
 
 		// ==========================================================
 		// Check if we need to use the vector store
@@ -728,9 +725,50 @@ func main() {
 
 		} // end of similarites search
 
-		messages = append(messages, api.Message{Role: "user", Content: userQuestion})
+		//messages = append(messages, api.Message{Role: "user", Content: userQuestion})
 
-		//fmt.Println(messages)
+		// Prompt construction
+		if toolsContext != "" {
+			// ✋ The result of the tools invocation is added to the user question
+
+			if *asSystemMessage {
+				messages = append(messages, api.Message{Role: "system", Content: toolsContext})
+				messages = append(messages, api.Message{Role: "user", Content: userQuestion})
+
+			} else if *asUserMessage {
+				if *beforeQuestion {
+					messages = append(messages, api.Message{Role: "user", Content: toolsContext})
+					messages = append(messages, api.Message{Role: "user", Content: userQuestion})
+				} else if *afterQuestion {
+					messages = append(messages, api.Message{Role: "user", Content: userQuestion})
+					messages = append(messages, api.Message{Role: "user", Content: toolsContext})
+
+				} else {
+					messages = append(messages, api.Message{Role: "user", Content: userQuestion})
+					messages = append(messages, api.Message{Role: "user", Content: toolsContext})
+				}
+			} else {
+				messages = append(messages, api.Message{Role: "user", Content: userQuestion})
+				messages = append(messages, api.Message{Role: "user", Content: toolsContext})
+			}
+
+			//messages = append(messages, api.Message{Role: "system", Content: toolsContext})
+			//messages = append(messages, api.Message{Role: "user", Content: toolsContext})
+			//userQuestion = promptContext + "\n\n" + userQuestion
+		} else {
+
+			messages = append(messages, api.Message{Role: "user", Content: userQuestion})
+
+		}
+
+		if config.AddToMessages != "" {
+			// Add the content of the file to the messages
+			addToMessages, errAdd := os.ReadFile(config.AddToMessages)
+			if errAdd != nil {
+				log.Fatalf("😡 Error reading add-to-messages file: %v", errAdd)
+			}
+			messages = append(messages, api.Message{Role: "user", Content: string(addToMessages)})
+		}
 
 		req = &api.ChatRequest{
 			Model:    model,
