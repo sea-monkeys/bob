@@ -27,7 +27,22 @@ import (
 // TODO: add a waiting message
 // TODO: add an option for the conversational memory
 // TODO: generate the report and its content at the same time (streaming)
-// TODO: add a command to override the context like with system and user questions
+// TODO: add several files to the messages?
+
+/* TODO: about --create and --rag, it would be better to use command instead of flags.
+Try something like this:
+
+	// Parse command-line arguments
+	flag.Parse()
+
+	// Check command and execute
+	switch flag.Arg(0) {
+	case "create":
+		fmt.Printf("Hello, %s!\n", *namePtr)
+	case "rag":
+		fmt.Println("generate vector store")
+	}
+*/
 
 type RagConfig struct {
 	ChunkSize           int     `json:"chunkSize"`
@@ -239,6 +254,7 @@ func main() {
 	afterQuestion := flag.Bool("after-question", false, "After user question")
 	// Parse command line arguments
 	flag.Parse()
+
 
 	// Create project structure
 	if config.ProjectPathName != "" {

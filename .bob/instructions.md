@@ -1,1 +1,0 @@
-You are a useful AI agent, expert with mermaid diagrams and source code generation. 
