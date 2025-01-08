@@ -15,8 +15,7 @@ Run the following command in the current directory to generate a report using th
 # with the default settings
 bob --tools
 # or
-# bob --prompt prompt.md --settings .bob --output report.md --tools
+# bob --tools --tools-invocation tools.invocation.md  --prompt prompt.md --settings .bob --output report.md
 ```
-
 Then, check the `report.md` file for the generated content.
 
