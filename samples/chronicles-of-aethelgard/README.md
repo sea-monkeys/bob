@@ -41,3 +41,4 @@ bob
 #or
 bob --user "Summarize information on Gnomish Species"
 ```
+> Bob will detect automatically that's a RAG project

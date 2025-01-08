@@ -20,6 +20,8 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/ollama/ollama/api"
 	"github.com/sea-monkeys/asellus"
+	"github.com/sea-monkeys/bob/config"
+	"github.com/sea-monkeys/bob/rag"
 	"github.com/sea-monkeys/daphnia"
 )
 
@@ -43,81 +45,6 @@ Try something like this:
 		fmt.Println("generate vector store")
 	}
 */
-
-type RagConfig struct {
-	ChunkSize           int     `json:"chunkSize"`
-	ChunkOverlap        int     `json:"chunkOverlap"`
-	SimilarityThreshold float64 `json:"similarityThreshold"`
-	MaxSimilarity       int     `json:"maxSimilarity"`
-}
-
-type Config struct {
-	PromptPath          string
-	ContextPath         string // for this one check if the file exists
-	ToolsInvocationPath string
-	JsonSchemaPath      string
-
-	SettingsPath     string
-	OutputPath       string
-	RagDocumentsPath string // for RAG
-
-	// Generate a project structure
-	ProjectPathName string
-	KindOfProject   string
-
-	// to override the system and user questions
-	System string
-	User   string
-
-	// --add-to-messages ../../main.go --as-user --after-question
-	AddToMessages string
-}
-
-func validatePaths(config Config) error {
-	// Check if prompt file exists
-	if _, err := os.Stat(config.PromptPath); err != nil {
-		return fmt.Errorf("prompt file not found: %v", err)
-	}
-
-	// Check if settings directory exists
-	if info, err := os.Stat(config.SettingsPath); err != nil {
-		return fmt.Errorf("settings directory not found: %v", err)
-	} else if !info.IsDir() {
-		return fmt.Errorf("settings path must be a directory")
-	}
-
-	// Check if output directory exists
-	outputDir := filepath.Dir(config.OutputPath)
-	if info, err := os.Stat(outputDir); err != nil {
-		if os.IsNotExist(err) {
-			if err := os.MkdirAll(outputDir, 0755); err != nil {
-				return fmt.Errorf("failed to create output directory: %v", err)
-			}
-		} else {
-			return fmt.Errorf("error checking output directory: %v", err)
-		}
-	} else if !info.IsDir() {
-		return fmt.Errorf("output path parent must be a directory")
-	}
-
-	return nil
-}
-
-func loadRagConfig(path string) (RagConfig, error) {
-	// Load the json rag config file
-	ragConfigFile, errRagConf := os.ReadFile(path)
-	if errRagConf != nil {
-		//log.Fatalf("😡 Error reading rag.json file: %v", errRagConf)
-		return RagConfig{}, errRagConf
-	}
-	var ragConfig RagConfig
-	errJsonRagConf := json.Unmarshal(ragConfigFile, &ragConfig)
-	if errJsonRagConf != nil {
-		//log.Fatalf("😡 Error unmarshalling rag.json file: %v", errJsonRagConf)
-		return RagConfig{}, errJsonRagConf
-	}
-	return ragConfig, nil
-}
 
 var (
 	FALSE = false
@@ -217,7 +144,7 @@ var sampleToolsTools []byte
 var sampleToolsReadme []byte
 
 func main() {
-	config := Config{}
+	config := config.Config{}
 
 	// Define command line flags
 	flag.StringVar(&config.PromptPath, "prompt", "prompt.md", "Path to prompt file")
@@ -233,7 +160,7 @@ func main() {
 	flag.StringVar(&config.AddToMessages, "add-to-messages", "", "Add to messages")
 
 	// Project structure
-	flag.StringVar(&config.ProjectPathName, "create", "", "Project path name")
+	flag.StringVar(&config.CreateProjectPathName, "create", "", "Project path name")
 	flag.StringVar(&config.KindOfProject, "kind", "chat", "Kind of project")
 
 	flag.StringVar(&config.System, "system", "", "System instructions")
@@ -255,12 +182,11 @@ func main() {
 	// Parse command line arguments
 	flag.Parse()
 
-
 	// Create project structure
-	if config.ProjectPathName != "" {
+	if config.CreateProjectPathName != "" {
 
 		// title is the last part of the path config.ProjectPathName
-		title := filepath.Base(config.ProjectPathName)
+		title := filepath.Base(config.CreateProjectPathName)
 		// The first letter must be uppercase
 		title = strings.ToUpper(title[:1]) + title[1:]
 
@@ -271,73 +197,73 @@ func main() {
 		case "chat": // bob --create samples/coucou --kind chat
 
 			dirs = []string{
-				config.ProjectPathName,
-				config.ProjectPathName + "/.bob",
+				config.CreateProjectPathName,
+				config.CreateProjectPathName + "/.bob",
 			}
 
 			// Define file contents
 			files = map[string]string{
-				filepath.Join(config.ProjectPathName, ".bob", ".env"):            string(sampleChatEnv),
-				filepath.Join(config.ProjectPathName, ".bob", "instructions.md"): string(sampleChatInstructions),
-				filepath.Join(config.ProjectPathName, ".bob", "settings.json"):   string(sampleChatSettings),
-				filepath.Join(config.ProjectPathName, "prompt.md"):               string(sampleChatPrompt),
-				filepath.Join(config.ProjectPathName, "README.md"):               "# " + title + "\n" + string(sampleChatReadme),
+				filepath.Join(config.CreateProjectPathName, ".bob", ".env"):            string(sampleChatEnv),
+				filepath.Join(config.CreateProjectPathName, ".bob", "instructions.md"): string(sampleChatInstructions),
+				filepath.Join(config.CreateProjectPathName, ".bob", "settings.json"):   string(sampleChatSettings),
+				filepath.Join(config.CreateProjectPathName, "prompt.md"):               string(sampleChatPrompt),
+				filepath.Join(config.CreateProjectPathName, "README.md"):               "# " + title + "\n" + string(sampleChatReadme),
 			}
 
 		case "tools": // bob --create samples/coucou --kind tools
 
 			dirs = []string{
-				config.ProjectPathName,
-				config.ProjectPathName + "/.bob",
+				config.CreateProjectPathName,
+				config.CreateProjectPathName + "/.bob",
 			}
 
 			// Define file contents
 			files = map[string]string{
-				filepath.Join(config.ProjectPathName, ".bob", ".env"):            string(sampleToolsEnv),
-				filepath.Join(config.ProjectPathName, ".bob", "instructions.md"): string(sampleToolsInstructions),
-				filepath.Join(config.ProjectPathName, ".bob", "settings.json"):   string(sampleToolsSettings),
-				filepath.Join(config.ProjectPathName, ".bob", "tools.json"):      string(sampleToolsTools),
-				filepath.Join(config.ProjectPathName, ".bob", "say_hello.sh"):    string(sampleToolsSayHello),
+				filepath.Join(config.CreateProjectPathName, ".bob", ".env"):            string(sampleToolsEnv),
+				filepath.Join(config.CreateProjectPathName, ".bob", "instructions.md"): string(sampleToolsInstructions),
+				filepath.Join(config.CreateProjectPathName, ".bob", "settings.json"):   string(sampleToolsSettings),
+				filepath.Join(config.CreateProjectPathName, ".bob", "tools.json"):      string(sampleToolsTools),
+				filepath.Join(config.CreateProjectPathName, ".bob", "say_hello.sh"):    string(sampleToolsSayHello),
 
-				filepath.Join(config.ProjectPathName, "tools.invocation.md"): string(sampleToolsInvocation),
-				filepath.Join(config.ProjectPathName, "prompt.md"):           string(sampleToolsPrompt),
-				filepath.Join(config.ProjectPathName, "README.md"):           "# " + title + "\n" + string(sampleToolsReadme),
+				filepath.Join(config.CreateProjectPathName, "tools.invocation.md"): string(sampleToolsInvocation),
+				filepath.Join(config.CreateProjectPathName, "prompt.md"):           string(sampleToolsPrompt),
+				filepath.Join(config.CreateProjectPathName, "README.md"):           "# " + title + "\n" + string(sampleToolsReadme),
 			}
 
 		case "rag": // bob --create samples/coucou --kind rag
 
 			dirs = []string{
-				filepath.Join(config.ProjectPathName, ".bob"),
-				filepath.Join(config.ProjectPathName, "content"),
+				filepath.Join(config.CreateProjectPathName, ".bob"),
+				filepath.Join(config.CreateProjectPathName, "content"),
 			}
 
 			// Define files and their contents
 			files = map[string]string{
-				filepath.Join(config.ProjectPathName, ".bob", ".env"):            string(sampleRagEnv),
-				filepath.Join(config.ProjectPathName, ".bob", "instructions.md"): string(sampleRagInstructions),
-				filepath.Join(config.ProjectPathName, ".bob", "rag.json"):        string(sampleRagParameters),
-				filepath.Join(config.ProjectPathName, ".bob", "settings.json"):   string(sampleRagSettings),
-				filepath.Join(config.ProjectPathName, "content", "content.txt"):  string(sampleRagContent),
-				filepath.Join(config.ProjectPathName, "prompt.md"):               string(sampleRagPrompt),
-				filepath.Join(config.ProjectPathName, "README.md"):               "# " + title + "\n" + string(sampleRagReadme),
+				filepath.Join(config.CreateProjectPathName, ".bob", ".env"):            string(sampleRagEnv),
+				filepath.Join(config.CreateProjectPathName, ".bob", "instructions.md"): string(sampleRagInstructions),
+				filepath.Join(config.CreateProjectPathName, ".bob", "rag.json"):        string(sampleRagParameters),
+				filepath.Join(config.CreateProjectPathName, ".bob", "settings.json"):   string(sampleRagSettings),
+				filepath.Join(config.CreateProjectPathName, "content", "content.txt"):  string(sampleRagContent),
+				filepath.Join(config.CreateProjectPathName, "prompt.md"):               string(sampleRagPrompt),
+				filepath.Join(config.CreateProjectPathName, "README.md"):               "# " + title + "\n" + string(sampleRagReadme),
 			}
 
 		case "schema": // bob --create samples/coucou --kind schema
 
 			dirs = []string{
-				config.ProjectPathName,
-				config.ProjectPathName + "/.bob",
+				config.CreateProjectPathName,
+				config.CreateProjectPathName + "/.bob",
 			}
 
 			// Define file contents
 			files = map[string]string{
-				filepath.Join(config.ProjectPathName, ".bob", ".env"):            string(sampleSchemaEnv),
-				filepath.Join(config.ProjectPathName, ".bob", "instructions.md"): string(sampleSchemaInstructions),
-				filepath.Join(config.ProjectPathName, ".bob", "settings.json"):   string(sampleSchemaSettings),
-				filepath.Join(config.ProjectPathName, "context.md"):              string(sampleSchemaContext),
-				filepath.Join(config.ProjectPathName, "prompt.md"):               string(sampleSchemaPrompt),
-				filepath.Join(config.ProjectPathName, "README.md"):               "# " + title + "\n" + string(sampleSchemaReadme),
-				filepath.Join(config.ProjectPathName, "schema.json"):             string(sampleSchemaSchema),
+				filepath.Join(config.CreateProjectPathName, ".bob", ".env"):            string(sampleSchemaEnv),
+				filepath.Join(config.CreateProjectPathName, ".bob", "instructions.md"): string(sampleSchemaInstructions),
+				filepath.Join(config.CreateProjectPathName, ".bob", "settings.json"):   string(sampleSchemaSettings),
+				filepath.Join(config.CreateProjectPathName, "context.md"):              string(sampleSchemaContext),
+				filepath.Join(config.CreateProjectPathName, "prompt.md"):               string(sampleSchemaPrompt),
+				filepath.Join(config.CreateProjectPathName, "README.md"):               "# " + title + "\n" + string(sampleSchemaReadme),
+				filepath.Join(config.CreateProjectPathName, "schema.json"):             string(sampleSchemaSchema),
 			}
 
 		default:
@@ -374,6 +300,7 @@ func main() {
 
 		os.Exit(0)
 	}
+	// END of Project Creation
 
 	// Check for version flag
 	if *version {
@@ -382,6 +309,7 @@ func main() {
 	}
 
 	// Validate required flags
+
 	if config.PromptPath == "" || config.SettingsPath == "" || config.OutputPath == "" {
 		fmt.Println("Usage: bob --prompt path_to_prompt_file --settings path_to_settings_directory --output path_to_output_file")
 		flag.PrintDefaults()
@@ -389,13 +317,17 @@ func main() {
 	}
 
 	// Validate paths
-	if err := validatePaths(config); err != nil {
-		fmt.Printf("😡 Error: %v\n", err)
-		os.Exit(1)
-	}
+	/*
+		if err := tools.ValidatePaths(config); err != nil {
+			fmt.Printf("😡 Error: %v\n", err)
+			os.Exit(1)
+		}
+	*/
 
 	// Main logic
 	ctx := context.Background()
+
+	fmt.Println("🎃 config.SettingsPath", config.SettingsPath)
 
 	errEnv := godotenv.Load(config.SettingsPath + "/.env")
 	if errEnv != nil {
@@ -450,7 +382,7 @@ func main() {
 	if config.RagDocumentsPath != "" {
 
 		// Load the json rag config file
-		ragConfig, errRagConf := loadRagConfig(config.SettingsPath + "/rag.json")
+		ragConfig, errRagConf := rag.LoadRagConfig(config.SettingsPath + "/rag.json")
 		if errRagConf != nil {
 			log.Fatalf("😡 Error loading rag.json file: %v", errRagConf)
 		}
@@ -680,7 +612,7 @@ func main() {
 			fmt.Println("📝🤖 using:", ollamaRawUrl, embeddingsModel, "for RAG.")
 
 			// Load the json rag config file
-			ragConfig, errRagConf := loadRagConfig(config.SettingsPath + "/rag.json")
+			ragConfig, errRagConf := rag.LoadRagConfig(config.SettingsPath + "/rag.json")
 			if errRagConf != nil {
 				log.Fatalf("😡 Error loading rag.json file: %v", errRagConf)
 			}
