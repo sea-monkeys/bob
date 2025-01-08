@@ -114,3 +114,11 @@ bob --create path/to/project --kind chat|rag|tools|schema
 ```bash
 bob --add-to-messages path/to/file
 ```
+
+## Messages list construction
+
+The messages list is constructed as follows:
+- system message (instructions: from instructions.md (in the settingsPath) or from the --system flag to define a string value, but not a path)
+- system message (from the --context flag to define a path to context.md)
+- user message (prompt/question: from prompt.md (in the settingsPath) or from the --user flag to define a string value, but not a path)
+- user message (from the ----add-to-messages path/to/file)

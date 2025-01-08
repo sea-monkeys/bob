@@ -1,4 +1,3 @@
-Hello Bob 📱👋, 
-Greetings Jane 📱👋, 
-And to John Doe 📱👋,  
-A pleasant day ahead! 🌟
+👋🏼 Hello Bob 🌟  
+👋🏼 Hi Jane 🌟  
+💫 Greetings John Doe 🌟
