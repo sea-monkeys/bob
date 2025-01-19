@@ -1,33 +1,27 @@
-Bien sûr, voici une recette originale de pot-au-feu :
+Bien sûr, je serais ravi de vous présenter une recette de pot-au-feu originale !
 
 Ingrédients :
 
-* 1 kg de viande de bœuf à pot-au-feu
-* 1 oignon piqué de clous de girofle
+* 1 kg de viande de bœuf avec un bon quotient de os et de cartilage pour la richesse du bouillon (par exemple, un quartier de jarret, quelques os à moelle et un morceau de paleron)
+* 2 oignons piqués de clous de girofle
 * 2 carottes
-* 2 branches de céleri
-* 1 feuille de laurier
-* 1 bouquet garni (thym, persil, sauge)
-* 2 gousses d'ail non pelées
-* 1 cuillère à soupe de concentré de tomate
-* Sel et poivre noir moulu
-* 1 cuillère à soupe de farine
-* 2 cuillères à soupe d'huile d'olive
-* 2 litres d'eau ou de bouillon de bœuf
-* 500 g de pommes de terre nouvelles
-* 1 chou vert coupé en quartiers
-* 1 branche de persil frais haché pour la garniture
+* 2 branches de céleri avec les feuilles
+* 1 bouquet garni (thym, laurier et persil)
+* 1 tête d'ail coupée en deux
+* 2 feuilles de laurier
+* Sel de mer et poivre noir fraîchement moulu
+* 2 cuillères à soupe de concentré de tomate
+* 2 cuillères à soupe de vinaigre blanc
+* 2 branches de persil plat pour la garniture
+* 2 branches de coriandre pour la garniture
 
 Instructions :
 
-1. Dans une grande casserole ou une marmite en fonte, faites chauffer l'huile d'olive à feu moyen-doux.
-2. Ajoutez l'oignon piqué de clous de girofle et faites-le dorer pendant environ 5 minutes.
-3. Ajoutez la viande de bœuf dans la casserole et faites-la dorer de tous les côtés pendant environ 10 minutes.
-4. Ajoutez les carottes, le céleri, la feuille de laurier, le bouquet garni, les gousses d'ail non pelées, le concentré de tomate, le sel et le poivre noir moulu. Mélangez bien.
-5. Ajoutez la farine et mélangez de nouveau pour enrober la viande et les légumes.
-6. Ajoutez l'eau ou le bouillon de bœuf et portez à ébullition. Réduisez ensuite le feu à moyen-doux et laissez mijoter pendant environ 2 heures.
-7. Ajoutez les pommes de terre nouvelles et le chou vert dans la casserole et laissez cuire pendant environ 30 minutes supplémentaires ou jusqu'à ce que les légumes soient tendres.
-8. Goûtez et ajustez l'assaisonnement si nécessaire.
-9. Servez le pot-au-feu dans des bols ou des assiettes creuses, en ajoutant une branche de persil frais haché pour la garniture.
+1. Dans une grande marmite ou une cocotte en fonte, faites revenir les os de viande à feu vif pendant 5-10 minutes pour les dorer.
+2. Ajoutez les oignons piqués de clous de girofle, les carottes, le céleri, le bouquet garni et la tête d'ail. Faites revenir le tout pendant 5 minutes supplémentaires pour ajouter de la saveur.
+3. Mouillez avec 2 litres d'eau et ajoutez les feuilles de laurier, le concentré de tomate et le vinaigre blanc. Laissez mijoter pendant environ 3 heures à feu doux, en écumant régulièrement la surface pour retirer l'écume et les impuretés.
+4. Ajoutez les os à moelle et les quartiers de jarret environ 1 heure avant la fin de la cuisson pour qu'ils soient bien tendres. Salez et poivrez à votre goût.
+5. Une fois la viande tendre et le bouillon riche en goût, retirez-la de la marmite et réservez-la au chaud. Passez le bouillon à travers une passoire fine pour retirer les légumes et les herbes.
+6. Coupez la viande en tranches et servez-la accompagnée de légumes de votre choix (par exemple, des pommes de terre sautées, des haricots verts et des carottes). Versez le bouillon filtré dans des bols et ajoutez quelques branches de persil plat et de coriandre pour la garniture.
 
-Bonne dégustation !
+Bon appétit !

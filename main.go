@@ -156,6 +156,7 @@ func main() {
 
 	ollamaClient := api.NewClient(url, http.DefaultClient)
 
+	
 	// ==========================================================
 	// 👷 RAG Creation of the Vector Store
 	// ==========================================================
@@ -398,6 +399,7 @@ func main() {
 
 	// Send the request to the server
 	answer := ""
+
 	errCompletion := ollamaClient.Chat(ctx, req, func(resp api.ChatResponse) error {
 		answer += resp.Message.Content
 		fmt.Print(resp.Message.Content)
@@ -406,6 +408,7 @@ func main() {
 
 	if errCompletion != nil {
 		fmt.Println("😡 Completion error:", errCompletion)
+
 	}
 
 	// generate a markdown file from the value of answer
